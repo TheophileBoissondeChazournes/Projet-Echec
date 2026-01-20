@@ -1,5 +1,7 @@
 import pyxel
 
+
+
 class Plateau:
     def __init__(self):
         pyxel.init(250, 250, title="Plateau d'échecs")
@@ -9,7 +11,7 @@ class Plateau:
         self.offset_x = (250- total_size) // 2 
         self.offset_y = (250 - total_size) // 2
         pyxel.run(self.update, self.draw)
-
+        
     def update(self):
         pass
 
