@@ -1,4 +1,6 @@
+from piece import *
 
-import numpy as np
-Jeu = np.zeros(8,8)
-print(Jeu)
+if __name__ == "__main__":
+    main()
+
+    positions_pieces = {}
