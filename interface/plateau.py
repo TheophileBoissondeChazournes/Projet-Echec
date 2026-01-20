@@ -1,5 +1,7 @@
 import pyxel
 
+
+
 class Plateau:
     def __init__(self):
         pyxel.init(250, 250, title="Plateau d'échecs")
@@ -24,7 +26,7 @@ class Plateau:
         self.pieces[7][4] = 'K'
      
         pyxel.run(self.update, self.draw)
-
+        
     def update(self):
         pass
 
