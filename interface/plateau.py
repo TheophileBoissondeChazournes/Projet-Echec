@@ -5,7 +5,7 @@ import pyxel
 class Plateau:
     def __init__(self):
         pyxel.init(250, 250, title="Plateau d'échecs")
-        self.cell_size = 25
+        self.cell_size = 27
         self.board_size = self.cell_size * 8
         total_size = self.board_size 
         self.offset_x = (250- total_size) // 2 
