@@ -1,10 +1,12 @@
 import pyxel
+from IA import IA
 
 class Plateau:
     def __init__(self):
         
         pyxel.init(250, 250, title="Plateau d'échecs")
         pyxel.mouse(True) 
+        self.ia = IA('b')
         
         # Dimensions
         self.cell_size = 27
@@ -14,6 +16,7 @@ class Plateau:
         
         
         self.pieces = [[None for _ in range(8)] for _ in range(8)]
+        self.liste_pieces = []
         self.tour = 'w'       
         self.selection = None 
         
@@ -79,6 +82,12 @@ class Plateau:
                         
                         # 2. On change de tour
                         self.tour = 'b' if self.tour == 'w' else 'w'
+
+                            # Si c'est au tour de l'IA
+                        if self.tour == 'b':
+                            self.ia.jouer(self.pieces)
+                            self.tour = 'w'
+
                         
                         # 3. On désélectionne
                         self.selection = None
