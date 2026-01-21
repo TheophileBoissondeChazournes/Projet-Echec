@@ -2,7 +2,7 @@ import pyxel
 
 class Plateau:
     def __init__(self):
-        # Activation de la souris
+        
         pyxel.init(250, 250, title="Plateau d'échecs")
         pyxel.mouse(True) 
         
@@ -12,10 +12,10 @@ class Plateau:
         self.offset_x = (250 - self.board_size) // 2 
         self.offset_y = (250 - self.board_size) // 2
         
-        # --- ETAT DU JEU ---
+        
         self.pieces = [[None for _ in range(8)] for _ in range(8)]
-        self.tour = 'w'       # 'w' pour les blancs, 'b' pour les noirs
-        self.selection = None # Stockera (ligne, col) de la pièce sélectionnée
+        self.tour = 'w'       
+        self.selection = None 
         
         # Placement initial
         for i in range(8):
@@ -26,7 +26,7 @@ class Plateau:
             self.pieces[0][i] = 'b' + p
             self.pieces[7][i] = 'w' + p
 
-        # --- DESSINS (tes coordonnées) ---
+        #dessin
         self.modeles_pieces = {
             "pion": [(7,3),(8,3),(6,4),(7,4),(8,4),(9,4),(5,5),(6,5),(7,5),(8,5),(9,5),(10,5),(6,6),(7,6),(8,6),(9,6),(7,7),(8,7),(5,8),(6,8),(7,8),(8,8),(9,8),(10,8),(5,9),(6,9),(7,9),(8,9),(9,9),(10,9)],
             "tour": [(5, 2), (7, 2), (9, 2),(5, 3), (6, 3), (7, 3), (8, 3), (9, 3),(6, 4), (7, 4), (8, 4),(6, 5), (7, 5), (8, 5),(6, 6), (7, 6), (8, 6),(6, 7), (7, 7), (8, 7),(6, 8), (7, 8), (8, 8),(6, 9), (7, 9), (8, 9),(6, 10), (7, 10), (8, 10),(6, 11), (7, 11), (8, 11),(5, 12), (6, 12), (7, 12), (8, 12), (9, 12),(4, 13), (5, 13), (6, 13), (7, 13), (8, 13), (9, 13), (10, 13)],
@@ -40,16 +40,14 @@ class Plateau:
         pyxel.run(self.update, self.draw)
 
     def update(self):
-        # Détection du clic gauche
+        
         if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
             mx = pyxel.mouse_x
             my = pyxel.mouse_y
             
-            # Conversion pixels -> coordonnées grille (0-7)
             col = (mx - self.offset_x) // self.cell_size
             ligne = (my - self.offset_y) // self.cell_size
             
-            # Vérifier si on a cliqué DANS le plateau
             if 0 <= col < 8 and 0 <= ligne < 8:
                 contenu_case = self.pieces[ligne][col]
                 
@@ -65,15 +63,15 @@ class Plateau:
                     sel_l, sel_c = self.selection
                     piece_selectionnee = self.pieces[sel_l][sel_c]
                     
-                    # Si on clique sur la MEME case -> on désélectionne
+                    # Si on clique sur la meme case -> on désélectionne
                     if (ligne, col) == (sel_l, sel_c):
                         self.selection = None
                     
-                    # Si on clique sur une pièce AMIE -> on change la sélection
+                    # Si on clique sur une pièce a soi -> on change la sélection
                     elif contenu_case is not None and contenu_case[0] == self.tour:
                         self.selection = (ligne, col)
                         
-                    # Sinon -> C'est un mouvement (case vide ou ennemie)
+                    # Sinon -> mouvement
                     else:
                         # 1. On déplace la pièce
                         self.pieces[ligne][col] = piece_selectionnee
@@ -88,7 +86,7 @@ class Plateau:
     def draw(self):
         pyxel.cls(13)
         
-        # --- Dessin du damier et des pièces ---
+        # Dessin du damier et des pièces
         for ligne in range(8):
             for col in range(8):
                 x_case = self.offset_x + col * self.cell_size
@@ -97,7 +95,7 @@ class Plateau:
                 # Couleur du sol
                 couleur_sol = 6 if (ligne + col) % 2 == 0 else 1
                 
-                # Si la case est SÉLECTIONNÉE, on la met en jaune (10)
+                # Si la case est sélectionnée, on la met en jaune
                 if self.selection == (ligne, col):
                     couleur_sol = 10
                 
@@ -114,7 +112,7 @@ class Plateau:
                     for px, py in pixels:
                         pyxel.pset(x_case + px + 6, y_case + py + 6, col_pixel)
 
-        # --- Interface (Qui doit jouer ?) ---
+        # Qui doit jouer ?
         msg = "Tour: BLANCS" if self.tour == 'w' else "Tour: NOIRS"
         col_txt = 7 if self.tour == 'w' else 0
         pyxel.text(5, 5, msg, col_txt)
