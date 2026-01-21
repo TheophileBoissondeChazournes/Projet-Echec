@@ -45,3 +45,5 @@ class Pion(Piece) :
             self.y = new_y
 
         self.selectionne = False
+
+
