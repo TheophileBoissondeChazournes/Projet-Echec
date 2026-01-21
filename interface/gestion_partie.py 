@@ -26,10 +26,8 @@ class Jeu:
         
         
         piece = self.plateau.cases[y1][x1]
-
-        #
         
-        # A. Est-ce qu'il y a une pièce ici ?
+        # Est-ce qu'il y a une pièce ici ?
         if piece is None:
             print("Erreur: Case de départ vide.")
             return False
