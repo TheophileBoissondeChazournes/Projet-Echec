@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "Projet-Echec",
+			"path": "."
+		},
+		{
+			"name": "chess_images",
+			"path": "../../../Downloads/chess_images"
+		}
+	],
+	"settings": {}
+}
