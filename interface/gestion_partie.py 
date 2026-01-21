@@ -1,5 +1,70 @@
-class joueur :
-    def __init__(self, couleur) : 
-        self.gagne = False 
-        self.tour = False 
-        self.
+from plateau import Plateau  
+from pions import *
+from piece import *
+
+class Jeu:
+    def __init__(self):
+        self.plateau = Plateau()
+        self.trait_aux = "blanc" 
+        
+        # etat de la partie 
+        self.en_cours = True
+        self.gagnant = None
+
+    def changer_tour(self):
+        
+        if self.trait_aux == "blanc":
+            self.trait_aux = "noir"
+        else:
+            self.trait_aux = "blanc"
+        print(f"C'est au tour des {self.trait_aux}s")
+
+    def jouer_coup(self, depart: tuple, arrivee: tuple) -> bool:
+        
+        x1, y1 = depart
+        x2, y2 = arrivee
+        
+        
+        piece = self.plateau.cases[y1][x1]
+
+        #
+        
+        # A. Est-ce qu'il y a une pièce ici ?
+        if piece is None:
+            print("Erreur: Case de départ vide.")
+            return False
+
+        # B. Est-ce que c'est bien à ce joueur de jouer ?
+        if piece.couleur != self.trait_aux:
+            print(f"Erreur: C'est aux {self.trait_aux}s de jouer !")
+            return False
+
+        # C. Est-ce que le mouvement est valide ?
+        # (On appelle la fonction qu'on a codée ensemble dans Piece)
+        if not piece.chemin_est_possible(depart, arrivee, self.plateau.cases):
+            print("Coup impossible (règles de déplacement ou obstacle).")
+            return False
+
+        # --- ACTION (Si on arrive ici, tout est bon) ---
+        
+        # 1. Gérer la prise (Manger)
+        piece_cible = self.plateau.cases[y2][x2]
+        if piece_cible is not None:
+            piece_cible.vivant = False
+            print(f"Une pièce {piece_cible.couleur} a été mangée !")
+
+        # 2. Déplacer la pièce sur le plateau (Mémoire)
+        self.plateau.cases[y2][x2] = piece
+        self.plateau.cases[y1][x1] = None
+        
+        # 3. Mettre à jour les coordonnées internes de la pièce
+        piece.x = x2
+        piece.y = y2
+
+        # 4. Vérifier si c'est Échec et Mat (Optionnel pour l'instant)
+        # self.verifier_victoire()
+
+        # 5. Passer la main
+        self.changer_tour()
+        
+        return True
