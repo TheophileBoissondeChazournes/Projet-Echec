@@ -1,0 +1,5 @@
+class joueur :
+    def __init__(self, couleur) : 
+        self.gagne = False 
+        self.tour = False 
+        self.
