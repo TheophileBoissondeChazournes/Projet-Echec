@@ -2,7 +2,7 @@ import random
 
 class IA:
     def __init__(self, couleur):
-        self.couleur = couleur  # 'b' ou 'w'
+        self.couleur = couleur 
 
     def jouer(self, plateau):
         coups = self.generer_coups(plateau)
