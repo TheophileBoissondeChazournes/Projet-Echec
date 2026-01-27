@@ -61,7 +61,7 @@ class Plateau:
             col = (mx - self.offset_x) // self.cell_size
             ligne = (my - self.offset_y) // self.cell_size
             
-            # Vérifier si on a cliqué DANS le plateau
+            # Vérifier si on a cliqué dans le plateau
             if 0 <= col < 8 and 0 <= ligne < 8:
                 contenu_case = self.pieces[ligne][col]
                 
@@ -102,7 +102,7 @@ class Plateau:
                         # 3. On désélectionne
                         self.selection = None
 
-                    # Si on clique sur une pièce AMIE 
+                    # Si on clique sur une pièce amie 
                     elif contenu_case is not None and contenu_case.couleur == self.tour:
                         self.selection = (ligne, col)
                     
@@ -117,46 +117,84 @@ class Plateau:
                         
 
     def draw(self):
-        pyxel.cls(13)
-        
-        # Dessin du damier et des pièces
-        for ligne in range(8):
+            pyxel.cls(13)
+            
+            # 1. Dessin du damier
+            for ligne in range(8):
+                for col in range(8):
+                    x_case = self.offset_x + col * self.cell_size
+                    y_case = self.offset_y + ligne * self.cell_size
+                    couleur_sol = 6 if (ligne + col) % 2 == 0 else 1
+                    
+                    if self.selection == (ligne, col):
+                        couleur_sol = 10
+                    
+                    pyxel.rect(x_case, y_case, self.cell_size, self.cell_size, couleur_sol)
+
+            # 2. Prévisualisation des coups possibles (Vert)
+            if self.selection:
+                sel_l, sel_c = self.selection
+                piece_sel = self.pieces[sel_l][sel_c]
+
+                if piece_sel:
+                    vrai_x = piece_sel.x
+                    vrai_y = piece_sel.y
+                    vrai_selection = piece_sel.selectionne
+
+                    for l in range(8):
+                        for c in range(8):
+                            if (l, c) == (sel_l, sel_c):
+                                continue
+
+                            # Simulation : On teste si la pièce peut avancer sur la case (c, l)
+                            if piece_sel.avancer(c, l, self.pieces):
+                                x_vert = self.offset_x + c * self.cell_size
+                                y_vert = self.offset_y + l * self.cell_size
+                                
+                                # Dessin d'un carré vert 
+                                pyxel.rect(x_vert + 2, y_vert + 2, self.cell_size - 4, self.cell_size - 4, 3)
+                                # On remet la pièce à sa position initiale
+                                piece_sel.x = vrai_x
+                                piece_sel.y = vrai_y
+                                piece_sel.selectionne = vrai_selection
+                    
+                    piece_sel.x = vrai_x
+                    piece_sel.y = vrai_y
+                    piece_sel.selectionne = vrai_selection
+
+            # 3. Dessin des pièces
+            for ligne in range(8):
+                for col in range(8):
+                    x_case = self.offset_x + col * self.cell_size
+                    y_case = self.offset_y + ligne * self.cell_size
+                    
+                    code_piece = self.pieces[ligne][col]
+                    if code_piece:
+                        couleur_p = code_piece.couleur
+                        type_p = code_piece.__class__.__name__
+                        col_pixel = 7 if couleur_p == 'w' else 0
+                        
+                        if type_p in self.modeles_pieces:
+                            pixels = self.modeles_pieces[type_p]
+                            for px, py in pixels:
+                                pyxel.pset(x_case + px + 6, y_case + py + 6, col_pixel)
+            
+            # 4. Interface
+            msg = "Tour: BLANCS" if self.tour == 'w' else "Tour: NOIRS"
+            col_txt = 7 if self.tour == 'w' else 0
+            pyxel.text(5, 5, msg, col_txt)
+            
+            # Coordonnées
             for col in range(8):
-                x_case = self.offset_x + col * self.cell_size
-                y_case = self.offset_y + ligne * self.cell_size
-                couleur_sol = 6 if (ligne + col) % 2 == 0 else 1
-                
-                if self.selection == (ligne, col):
-                    couleur_sol = 10
-                
-                pyxel.rect(x_case, y_case, self.cell_size, self.cell_size, couleur_sol)
+                lettre = chr(ord("A") + col)
+                x = self.offset_x + col * self.cell_size + 11
+                y = self.offset_y + 8 * self.cell_size + 5
+                pyxel.text(x, y, lettre, 0)
 
-                # Dessin de la pièce
-                code_piece = self.pieces[ligne][col]
-                if code_piece:
-                    couleur_p = code_piece.couleur
-                    type_p = code_piece.__class__.__name__  # nom de la classe
-                    col_pixel = 7 if couleur_p == 'w' else 0
-                    pixels = self.modeles_pieces[type_p]
-                    for px, py in pixels:
-                        pyxel.pset(x_case + px + 6, y_case + py + 6, col_pixel)
-
-        
-        msg = "Tour: BLANCS" if self.tour == 'w' else "Tour: NOIRS"
-        col_txt = 7 if self.tour == 'w' else 0
-        pyxel.text(5, 5, msg, col_txt)
-        
-        # Coordonnées
-        for col in range(8):
-            lettre = chr(ord("A") + col)
-            x = self.offset_x + col * self.cell_size + 11
-            y = self.offset_y + 8 * self.cell_size + 5
-            pyxel.text(x, y, lettre, 0)
-
-        for ligne in range(8):
-            nb = str(8 - ligne)
-            x = self.offset_x - 10
-            y = self.offset_y + ligne * self.cell_size + 11
-            pyxel.text(x, y, nb, 0)
+            for ligne in range(8):
+                nb = str(8 - ligne)
+                x = self.offset_x - 10
+                y = self.offset_y + ligne * self.cell_size + 11
+                pyxel.text(x, y, nb, 0)
 
 Plateau()
