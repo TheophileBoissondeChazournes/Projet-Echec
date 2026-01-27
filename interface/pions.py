@@ -1,38 +1,106 @@
 from piece import *
 
 
-class Dame(Piece) : 
-    def avancer(self, new_x, new_y, plateau) : 
-        if (new_x == self.x and new_y != self.y) or  (new_y == self.y  and new_x != self.x) or ( abs(new_x - self.x) == abs(new_y - self.y)): 
-            self.x = new_x
-            self.y = new_y
-            return True
+class Dame(Piece): 
+    def avancer(self, new_x, new_y, plateau): 
 
+        if plateau[new_y][new_x] is not None and  plateau[new_y][new_x].couleur == self.couleur:
+            return False # Impossible de manger un ami
+        
+        delta_x = new_x - self.x
+        delta_y = new_y - self.y
 
-class Tour(Piece) : 
-    def avancer(self, new_x, new_y, plateau) : 
-        if (new_x == self.x and new_y != self.y) or  (new_y == self.y  and new_x != self.x) : 
-            self.x = new_x
-            self.y = new_y
-            return True 
+        geo_ok = (new_x == self.x or new_y == self.y) or (abs(delta_x) == abs(delta_y))
+        
+        if not geo_ok:
+            return False
 
-        self.selectionne = False
-    
+        # On détermine le sens du pas (-1, 0 ou 1)
+        step_x = 0 if delta_x == 0 else (1 if delta_x > 0 else -1)
+        step_y = 0 if delta_y == 0 else (1 if delta_y > 0 else -1)
+        
+        curr_x = self.x + step_x
+        curr_y = self.y + step_y
+        
+        # On avance case par case jusqu'à la destination (exclue)
+        while (curr_x, curr_y) != (new_x, new_y):
+            if plateau[curr_y][curr_x] is not None:
+                return False # Obstacle
+            curr_x += step_x
+            curr_y += step_y
+
+        self.x = new_x
+        self.y = new_y
+        return True
+
+class Tour(Piece): 
+    def avancer(self, new_x, new_y, plateau): 
+
+        if plateau[new_y][new_x] is not None and  plateau[new_y][new_x].couleur == self.couleur:
+            return False # Impossible de manger un ami
+        
+        # 1. Géométrie (Ligne ou Colonne)
+        if not (new_x == self.x or new_y == self.y):
+            return False
+            
+        # 2. Trajet
+        delta_x = new_x - self.x
+        delta_y = new_y - self.y
+        
+        step_x = 0 if delta_x == 0 else (1 if delta_x > 0 else -1)
+        step_y = 0 if delta_y == 0 else (1 if delta_y > 0 else -1)
+        
+        curr_x = self.x + step_x
+        curr_y = self.y + step_y
+        
+        while (curr_x, curr_y) != (new_x, new_y):
+            if plateau[curr_y][curr_x] is not None:
+                return False # Obstacle
+            curr_x += step_x
+            curr_y += step_y
+
+        self.x = new_x
+        self.y = new_y
+        return True
 
 class Fou(Piece) : 
 
-    def avancer(self, new_x, new_y, plateau) : 
-        if abs(new_x - self.x) == abs(new_y - self.y) : 
+    def avancer(self, new_x, new_y, plateau): 
+            
+            if plateau[new_y][new_x] is not None and  plateau[new_y][new_x].couleur == self.couleur:
+                return False # Impossible de manger un ami
+        
+            # 1. Géométrie (Diagonale)
+            if abs(new_x - self.x) != abs(new_y - self.y):
+                return False
+                
+            # 2. Trajet
+            delta_x = new_x - self.x
+            delta_y = new_y - self.y
+            
+            step_x = 1 if delta_x > 0 else -1
+            step_y = 1 if delta_y > 0 else -1
+            
+            curr_x = self.x + step_x
+            curr_y = self.y + step_y
+            
+            while (curr_x, curr_y) != (new_x, new_y):
+                if plateau[curr_y][curr_x] is not None:
+                    return False # Obstacle
+                curr_x += step_x
+                curr_y += step_y
+
             self.x = new_x
             self.y = new_y
-            return True 
-
-        self.selectionne = False
-
+            return True
+    
 
 class Roi(Piece) : 
 
     def avancer(self, new_x, new_y, plateau) : 
+        if plateau[new_y][new_x] is not None and  plateau[new_y][new_x].couleur == self.couleur:
+            return False # Impossible de manger un ami
+        
         if abs(new_x - self.x) <= 1 and abs(new_y - self.y) <= 1 and not (new_x == self.x and new_y == self.y):     
             self.y = new_y
             return True 
@@ -79,6 +147,9 @@ class Pion(Piece):
 class Cavalier(Piece): 
 
     def avancer(self, new_x, new_y , plateau): 
+        if plateau[new_y][new_x] is not None and  plateau[new_y][new_x].couleur == self.couleur:
+            return False # Impossible de manger un ami
+        
         # Vérifie si le mouvement est en "L" :
         dx = abs(new_x - self.x)
         dy = abs(new_y - self.y)

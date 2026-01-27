@@ -107,7 +107,6 @@ class Plateau:
                         self.selection = (ligne, col)
                     
                     if isinstance(piece_selectionnee, Pion):
-                        print("oui")
                         # Si le pion arrive en bout de plateau
                         if (piece_selectionnee.couleur == 'w' and ligne == 0) or \
                             (piece_selectionnee.couleur == 'b' and ligne == 7):
