@@ -38,7 +38,6 @@ class IA:
                 for ny in range(8):
                     for nx in range(8):
 
-                        # 🔴 On clone le plateau
                         plateau_test = copy.deepcopy(plateau)
 
                         piece_test = plateau_test[y][x]
