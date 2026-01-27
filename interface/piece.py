@@ -36,16 +36,16 @@ class Piece():
             else: pas_y = 0 # Mouvement horizontal
             
             # On commence à la première case après le départ
-            #curr_x, curr_y = x1 + pas_x, y1 + pas_y
+            curr_x, curr_y = x1 + pas_x, y1 + pas_y
             
             # Tant qu'on n'est pas arrivé à la destination
-            while (x1, y1) != (x2, y2):
+            while (curr_x, curr_y) != (x2, y2):
 
-                if plateau[y1][x1] is not None:
+                if plateau[curr_y][curr_x] is not None:
                     return False # Obstacle 
             
-                x1 += pas_x
-                y1 += pas_y
+                curr_x += pas_x
+                curr_y += pas_y
 
         if plateau[y2][x2] is None : 
              return True 

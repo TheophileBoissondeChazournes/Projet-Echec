@@ -82,7 +82,8 @@ class Plateau:
                         self.selection = None
                         
                     #On vérifie que le déplacement est possible
-                    elif  piece_selectionnee.avancer(col, ligne):
+
+                    elif  piece_selectionnee.avancer(col, ligne, self.pieces):
                         # On gère la capture si nécessaire
                         cible = self.pieces[ligne][col]
                         if cible is not None:
@@ -104,6 +105,16 @@ class Plateau:
                     # Si on clique sur une pièce AMIE 
                     elif contenu_case is not None and contenu_case.couleur == self.tour:
                         self.selection = (ligne, col)
+                    
+                    if isinstance(piece_selectionnee, Pion):
+                        print("oui")
+                        # Si le pion arrive en bout de plateau
+                        if (piece_selectionnee.couleur == 'w' and ligne == 0) or \
+                            (piece_selectionnee.couleur == 'b' and ligne == 7):
+                                
+                            # On remplace le Pion par une Dame
+                            # On crée une nouvelle Dame avec les mêmes coordonnées et couleur
+                            self.pieces[ligne][col] = Dame(col, ligne, piece_selectionnee.couleur)
                         
 
     def draw(self):
